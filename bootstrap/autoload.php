@@ -1,7 +1,5 @@
 <?php declare(strict_types = 1);
 
-define('VIRMIRE_START', microtime(true));
-
 require __DIR__ . '/../virmire/Autoloader.php';
 
 $autoloader = Virmire\Autoloader::getInstance();

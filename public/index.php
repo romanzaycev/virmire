@@ -1,5 +1,7 @@
 <?php declare(strict_types = 1);
 
+define('VIRMIRE_START', microtime(true));
+
 require __DIR__ . '/../bootstrap/autoload.php';
 
 use Virmire\Container;
