@@ -28,7 +28,7 @@ class ConfigurationException extends \Exception
     
     /**
      * Get wrong key.
-     * 
+     *
      * @return string
      */
     public function getKey()
