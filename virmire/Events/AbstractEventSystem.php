@@ -31,7 +31,7 @@ abstract class AbstractEventSystem
     /**
      * @return string
      */
-    final protected function getUniqId() : string
+    final public function getUniqId() : string
     {
         return $this->uniqId;
     }

@@ -21,6 +21,11 @@ class Dispatcher
     private $emitters;
     
     /**
+     * @var Collections\TypeCollection
+     */
+    private $delayedListeners;
+    
+    /**
      * Event dispatcher initialize.
      *
      * @throws \TypeError
@@ -28,6 +33,10 @@ class Dispatcher
     protected function init()
     {
         $this->emitters = new class(Emitter::class) extends Collections\TypeCollection
+        {
+        };
+        
+        $this->delayedListeners = new class(Collections\Collection::class) extends Collections\TypeCollection
         {
         };
     }
@@ -42,12 +51,21 @@ class Dispatcher
      */
     public function register($object, Emitter $emitter)
     {
+        $class = get_class($object);
+        
         if (!is_object($object)) {
             throw new \TypeError('Argument 1 passed to register method must be an instance of object');
         }
         
-        $this->emitters->addItem(get_class($object), $emitter);
+        $this->emitters->addItem($class, $emitter);
         $this->makeContext($emitter, $object);
+        
+        if ($this->delayedListeners->has($class)) {
+            foreach ($this->delayedListeners->getItem($class) as $listenerId => $onArgs) {
+                call_user_func_array([$this, 'on'], $onArgs);
+            }
+            $this->delayedListeners->deleteItem($class);
+        }
     }
     
     /**
@@ -84,6 +102,20 @@ class Dispatcher
             if ($bindTo !== null) {
                 $this->makeContext($listener, $bindTo);
             }
+        } else {
+            if (!$this->delayedListeners->has($class)) {
+                $this->delayedListeners->addItem($class, new Collections\Collection());
+            }
+            
+            $this->delayedListeners->getItem($class)->addItem(
+                $listener->getUniqId(),
+                [
+                    'class'    => $class,
+                    'event'    => $event,
+                    'listener' => $listener,
+                    'bindTo'   => $bindTo
+                ]
+            );
         }
     }
     

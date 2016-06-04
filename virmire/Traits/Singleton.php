@@ -10,14 +10,14 @@ namespace Virmire\Traits;
 trait Singleton
 {
     
-    protected static $instance;
+    protected static $instance = null;
     
     /**
      * @return static
      */
     final public static function getInstance()
     {
-        return isset(static::$instance)
+        return (static::$instance !== null)
             ? static::$instance
             : static::$instance = new static;
     }
