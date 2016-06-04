@@ -6,3 +6,5 @@ php:
   - '7.0'
 
 script: phpunit
+
+after_script: coveralls
