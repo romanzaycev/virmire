@@ -43,4 +43,16 @@ class TypeCollectionTest extends PHPUnit_Framework_TestCase
         $tc->addItem('foo', new TypeCollectionTestClassWrongType());
     }
     
+    public function testTypeCollectionAddItemsWithConstructor()
+    {
+        $tc = new TypeCollection(
+            TypeCollectionTestClass::class,
+            [
+                'foo' => new TypeCollectionTestClass(),
+                'bar' => new TypeCollectionTestClass()
+            ]
+        );
+        $this->assertTrue(($tc->has('foo') && $tc->has('bar')));
+    }
+    
 }

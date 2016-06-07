@@ -58,7 +58,7 @@ class Container implements ContainerInterface
     public function set(string $name, $value)
     {
         if ($this->isRecordExists($name)) {
-            throw new ContainerException(sprintf('Record with key "%s" already exists', $name), $name);
+            throw new ContainerException(sprintf('Record with key "%s" already exists', $name));
         }
         
         if (is_callable($value)) {
@@ -92,7 +92,7 @@ class Container implements ContainerInterface
             return $this->records->getItem($name);
         }
         
-        throw new ContainerException(sprintf('Record with key "%s" does not exists', $name), $name);
+        throw new ContainerException(sprintf('Record with key "%s" does not exists', $name));
     }
     
     /**
@@ -108,7 +108,7 @@ class Container implements ContainerInterface
         if (!$this->delayedRecords->has($name)) {
             $this->delayedRecords->addItem($name, $callback);
         } else {
-            throw new ContainerException(sprintf('Delayed record with key "%s" already exists', $name), $name);
+            throw new ContainerException(sprintf('Delayed record with key "%s" already exists', $name));
         }
     }
     

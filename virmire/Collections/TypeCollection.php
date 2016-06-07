@@ -23,13 +23,13 @@ class TypeCollection extends Collection
      */
     public function __construct(string $type, array $data = [])
     {
+        parent::__construct();
+        
         $this->type = $type;
         
         foreach ($data as $k => $v) {
             $this->addItem($k, $v);
         }
-        
-        parent::__construct();
     }
     
     /**
@@ -58,4 +58,5 @@ class TypeCollection extends Collection
     {
         return $this->type;
     }
+    
 }
