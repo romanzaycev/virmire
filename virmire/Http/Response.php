@@ -11,6 +11,14 @@ class Response
 {
     
     /**
+     * Response constructor.
+     */
+    public function __construct()
+    {
+        
+    }
+    
+    /**
      * @var string
      */
     protected $body = '';

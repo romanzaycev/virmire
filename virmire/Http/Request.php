@@ -22,9 +22,4 @@ class Request
         
     }
     
-    public function capture()
-    {
-        
-    }
-    
 }
