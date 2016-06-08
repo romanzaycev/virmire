@@ -90,6 +90,12 @@ class DispatcherTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->dispatcher->hasEmitter(DispatcherEmitterTestClass::class));
     }
     
+    public function testDispatcherRegisterWithWrongArgument()
+    {
+        $this->expectException(\TypeError::class);
+        $this->dispatcher->register('', new Emitter());
+    }
+    
     public function testDispatcherHasWithNoRegisteredClass()
     {
         $this->assertFalse($this->dispatcher->hasEmitter(DispatcherEmitterTestClass::class));
