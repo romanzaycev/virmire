@@ -84,6 +84,7 @@ class Container implements ContainerInterface
                     $name,
                     $this->delayedRecords[$name]()
                 );
+                
                 $this->delayedRecords->deleteItem($name);
             }
             
@@ -96,7 +97,7 @@ class Container implements ContainerInterface
     }
     
     /**
-     * Checking the request of record.
+     * Set record with lazy initialization.
      *
      * @param string $name
      * @param callable $callback
@@ -105,7 +106,7 @@ class Container implements ContainerInterface
      */
     public function lazy(string $name, callable $callback)
     {
-        if (!$this->delayedRecords->has($name)) {
+        if (!$this->delayedRecords->has($name) && !$this->records->has($name)) {
             $this->delayedRecords->addItem($name, $callback);
         } else {
             throw new ContainerException(sprintf('Delayed record with key "%s" already exists', $name));
@@ -121,7 +122,7 @@ class Container implements ContainerInterface
      */
     public function isRequested(string $name) : bool
     {
-        if (array_key_exists($name, $this->requestedRecordsLog)) {
+        if (in_array($name, $this->requestedRecordsLog)) {
             return true;
         }
         
