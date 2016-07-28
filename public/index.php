@@ -12,10 +12,9 @@ use Virmire\Http;
 
 $application = new Application(
     new Container([
-        'settings' => function () {
+        'settings'        => function () {
             return new Configuration(require_once __DIR__ . '/../config/config.php');
         },
-        
         'eventDispatcher' => Dispatcher::getInstance()
     ])
 );
