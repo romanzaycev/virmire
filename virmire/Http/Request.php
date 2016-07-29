@@ -11,70 +11,66 @@ use Virmire\Traits\Singleton;
  */
 class Request
 {
-
+    
     use Singleton;
-
+    
     /**
      * @var array
      */
     private $post = array();
-
+    
     /**
      * @var array
      */
     private $get = array();
-
+    
     /**
      * @var array
      */
     private $cookie = array();
-
+    
     /**
      * @var array
      */
     private $server = array();
-
+    
     /**
      * @var array
      */
     private $files = array();
-
+    
     /**
      * @var string
      */
-    private $ipAddress = '0.0.0.0';
-
+    private $ipAddress = false;
+    
     /**
      * @var int
      */
     const IP_UNIDENTIFIED = 0;
-
+    
     /**
      * @var int
      */
     const IP_V4 = 1;
-
+    
     /**
      * @var int
      */
     const IP_V6 = 2;
-
+    
     /**
      * HTTP Request class initialize.
      */
     protected function init()
     {
-        $this->import($this->post, $_POST);
-        $this->import($this->get, $_GET);
-        $this->import($this->cookie, $_COOKIE);
-        $this->import($this->server, $_SERVER);
-        $this->import($this->files, $_FILES);
-
-        foreach ($_REQUEST as $k => $v) {
-            unset($_REQUEST[$k]);
-        }
+        $this->import($_POST, $this->post);
+        $this->import($_GET, $this->get);
+        $this->import($_COOKIE, $this->cookie);
+        $this->import($_SERVER, $this->server);
+        $this->import($_FILES, $this->files);
     }
-
+    
     /**
      * Get POST element.
      *
@@ -87,26 +83,26 @@ class Request
         if ($key !== false) {
             return $this->fetch((string)$key, $this->post);
         }
-
+        
         return $this->post;
     }
-
+    
     /**
      * Get GET element.
      *
      * @param bool $key
      *
-     * @return array
+     * @return array|bool|mixed
      */
     public function get($key = false)
     {
         if ($key !== false) {
             return $this->fetch((string)$key, $this->get);
         }
-
+        
         return $this->get;
     }
-
+    
     /**
      * Get REQUEST element.
      *
@@ -118,13 +114,13 @@ class Request
     {
         if ($key !== false) {
             $key = (string)$key;
-
+            
             return $this->getPost($key) ?: $this->get($key);
         }
-
+        
         return array_merge($this->get, $this->post);
     }
-
+    
     /**
      * Get COOKIE element.
      *
@@ -137,10 +133,10 @@ class Request
         if ($key !== false) {
             return $this->fetch((string)$key, $this->cookie);
         }
-
+        
         return $this->cookie;
     }
-
+    
     /**
      * Get element from FILES array.
      *
@@ -153,10 +149,10 @@ class Request
         if ($key !== false) {
             return $this->fetch((string)$key, $this->files);
         }
-
+        
         return $this->files;
     }
-
+    
     /**
      * Get element from SERVER array.
      *
@@ -169,10 +165,10 @@ class Request
         if ($key !== false) {
             return $this->fetch((string)$key, $this->server);
         }
-
+        
         return $this->server;
     }
-
+    
     /**
      * Get client IP address.
      *
@@ -183,38 +179,38 @@ class Request
         if ($this->ipAddress !== false) {
             return $this->ipAddress;
         }
-
+        
         $this->ipAddress = $this->getServer('REMOTE_ADDR');
-
+        
         $ip = $this->ipAddress;
-
+        
         switch ($this->getIpVersion($ip)) {
             case self::IP_V4:
                 $method = FILTER_FLAG_IPV4;
                 break;
-
+            
             case self::IP_V6:
                 $method = FILTER_FLAG_IPV6;
                 break;
-
+            
             default:
                 $method = 0;
                 break;
         }
-
+        
         $result = (bool)filter_var(
             $this->ipAddress,
             FILTER_VALIDATE_IP,
             $method
         );
-
+        
         if (!$result) {
             $this->ipAddress = '0.0.0.0';
         }
-
+        
         return $this->ipAddress;
     }
-
+    
     /**
      * Get IP address version.
      *
@@ -229,10 +225,10 @@ class Request
         } elseif (strpos($ip, '.') !== false) {
             return self::IP_V4;
         }
-
+        
         return self::IP_UNIDENTIFIED;
     }
-
+    
     /**
      * Check AJAX request.
      *
@@ -243,10 +239,10 @@ class Request
         if (strtoupper($this->getServer('HTTP_X_REQUESTED_WITH')) === strtoupper('XMLHttpRequest')) {
             return true;
         }
-
+        
         return false;
     }
-
+    
     /**
      * @param array $from
      * @param array $to
@@ -257,10 +253,9 @@ class Request
     {
         foreach ($from as $k => $v) {
             $to[strtoupper($k)] = $v;
-            unset($from[$k]);
         }
     }
-
+    
     /**
      * @param string $key
      * @param array $source
@@ -273,8 +268,8 @@ class Request
         if (isset($source[$key]) && !empty($source[$key])) {
             return $source[$key];
         }
-
+        
         return false;
     }
-
+    
 }
