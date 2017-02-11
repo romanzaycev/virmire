@@ -9,7 +9,6 @@ namespace Virmire\Events;
  */
 abstract class AbstractEventSystem
 {
-    
     /**
      * @var string
      */
@@ -59,5 +58,4 @@ abstract class AbstractEventSystem
     {
         return !is_null($this->context);
     }
-    
 }

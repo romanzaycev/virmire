@@ -9,7 +9,6 @@ namespace Virmire\Interfaces;
  */
 interface ContainerInterface
 {
-    
     /**
      * @param string $name
      *
@@ -35,5 +34,4 @@ interface ContainerInterface
      * @return bool
      */
     public function isRequested(string $name) : bool;
-    
 }

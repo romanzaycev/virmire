@@ -53,7 +53,6 @@ class DispatcherContextTestClass
 
 class DispatcherTest extends PHPUnit_Framework_TestCase
 {
-    
     /**
      * @var Dispatcher
      */
@@ -184,5 +183,4 @@ class DispatcherTest extends PHPUnit_Framework_TestCase
         
         $foo->emit($emitter, $event, null);
     }
-    
 }

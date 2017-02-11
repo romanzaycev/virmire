@@ -13,7 +13,6 @@ use Virmire\Interfaces\ContainerInterface;
  */
 class Container implements ContainerInterface
 {
-    
     /**
      * @var Collection
      */
@@ -175,5 +174,4 @@ class Container implements ContainerInterface
         
         return false;
     }
-    
 }

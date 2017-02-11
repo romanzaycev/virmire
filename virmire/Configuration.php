@@ -11,7 +11,6 @@ use Virmire\Exceptions\ConfigurationException;
  */
 class Configuration
 {
-    
     const SEPARATOR = '.';
     
     /**
@@ -82,5 +81,4 @@ class Configuration
     {
         return $this->get($name);
     }
-    
 }

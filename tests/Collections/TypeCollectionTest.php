@@ -13,7 +13,6 @@ class TypeCollectionTestClassWrongType
 
 class TypeCollectionTest extends PHPUnit_Framework_TestCase
 {
-    
     public function testTypeCollectionConstruct()
     {
         $tc = new TypeCollection(TypeCollectionTestClass::class);
@@ -54,5 +53,4 @@ class TypeCollectionTest extends PHPUnit_Framework_TestCase
         );
         $this->assertTrue(($tc->has('foo') && $tc->has('bar')));
     }
-    
 }

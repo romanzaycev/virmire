@@ -9,5 +9,4 @@ namespace Virmire\Collections\Exceptions;
  */
 class CollectionKeyHasUseException extends CollectionException
 {
-    
 }

@@ -35,5 +35,4 @@ class ConfigurationException extends \Exception
     {
         return $this->key;
     }
-    
 }

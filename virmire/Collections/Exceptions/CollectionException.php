@@ -9,5 +9,4 @@ namespace Virmire\Collections\Exceptions;
  */
 abstract class CollectionException extends \Exception
 {
-    
 }

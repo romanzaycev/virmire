@@ -10,7 +10,6 @@ class EmitterTestClassEmit
 
 class EmitterTest extends PHPUnit_Framework_TestCase
 {
-    
     public function testEmitterEmitWithNoListeners()
     {
         $e = new Emitter();
@@ -37,5 +36,4 @@ class EmitterTest extends PHPUnit_Framework_TestCase
         $data = [];
         $this->assertTrue($emitter->emit('onEvent', $data));
     }
-    
 }

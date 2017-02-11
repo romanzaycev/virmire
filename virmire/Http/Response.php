@@ -9,7 +9,6 @@ namespace Virmire\Http;
  */
 class Response
 {
-    
     /**
      * @var int
      */
@@ -146,5 +145,4 @@ class Response
     {
         $this->writeHeaders()->writeBody();
     }
-    
 }

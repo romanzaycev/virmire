@@ -45,5 +45,4 @@ class Listener extends AbstractEventSystem
         
         return $isPrevented;
     }
-    
 }

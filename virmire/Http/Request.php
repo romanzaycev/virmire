@@ -11,7 +11,6 @@ use Virmire\Traits\Singleton;
  */
 class Request
 {
-    
     use Singleton;
     
     /**
@@ -271,5 +270,4 @@ class Request
         
         return false;
     }
-    
 }

@@ -9,7 +9,6 @@ namespace Virmire\Collections;
  */
 class TypeCollection extends Collection
 {
-    
     /**
      * @var string
      */
@@ -58,5 +57,4 @@ class TypeCollection extends Collection
     {
         return $this->type;
     }
-    
 }

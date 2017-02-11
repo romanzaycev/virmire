@@ -143,5 +143,4 @@ class Dispatcher
         };
         $proxy->call($emitter);
     }
-    
 }

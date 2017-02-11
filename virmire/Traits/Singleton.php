@@ -9,7 +9,6 @@ namespace Virmire\Traits;
  */
 trait Singleton
 {
-    
     protected static $instance = null;
     
     /**
@@ -50,5 +49,4 @@ trait Singleton
     final private function __clone()
     {
     }
-    
 }

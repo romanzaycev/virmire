@@ -5,7 +5,6 @@ use Virmire\Exceptions\ContainerException;
 
 class ContainerTest extends PHPUnit_Framework_TestCase
 {
-    
     public function testConstructContainerWithWrongArgument()
     {
         $this->expectException(\TypeError::class);
@@ -92,5 +91,4 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $c = new Container(['foo' => 'bar']);
         $this->assertEquals('bar', $c->foo);
     }
-    
 }

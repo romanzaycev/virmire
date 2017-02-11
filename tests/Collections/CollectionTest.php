@@ -8,7 +8,6 @@ use Virmire\Collections\Exceptions;
  */
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
-    
     public function testCollectionWithArrayConstruct()
     {
         $c = new Collection(['foo' => 'bar']);
@@ -109,5 +108,4 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($c instanceof \Countable);
         $this->assertEquals(1, $c->count());
     }
-    
 }

@@ -9,5 +9,4 @@ namespace Virmire\Exceptions;
  */
 class NotSupportedException extends \Exception
 {
-    
 }

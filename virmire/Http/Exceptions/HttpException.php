@@ -5,5 +5,4 @@ namespace Virmire\Http;
 
 class HttpException extends \Exception
 {
-    
 }

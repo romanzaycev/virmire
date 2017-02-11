@@ -9,7 +9,6 @@ namespace Virmire;
  */
 class Router
 {
-    
     /**
      * Router constructor.
      */
@@ -17,5 +16,4 @@ class Router
     {
         
     }
-    
 }

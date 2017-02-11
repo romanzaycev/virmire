@@ -13,7 +13,6 @@ use Virmire\Traits\Singleton;
  */
 class Autoloader
 {
-    
     use Singleton;
     
     /**
