@@ -17,7 +17,6 @@ use Virmire\Http\Response;
  */
 class Application
 {
-    
     /**
      * @var ContainerInterface
      */
@@ -63,7 +62,7 @@ class Application
      */
     public function done(Request $request, Response $response)
     {
-        
+        // @TODO Move to Profiler
         define('VIRMIRE_END', microtime(true));
         if ($this->settings->get('app.profiler_enable', false) === true) {
             $time = VIRMIRE_END - VIRMIRE_START;
@@ -92,5 +91,4 @@ class Application
     {
         return $this->container->get($name);
     }
-    
 }
