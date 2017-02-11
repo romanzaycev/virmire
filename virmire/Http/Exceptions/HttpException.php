@@ -1,8 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace Virmire\Http;
+namespace Virmire\Http\Exceptions;
 
-
-class HttpException extends \Exception
+/**
+ * Class HttpException
+ *
+ * @package Virmire\Http
+ */
+abstract class HttpException extends \Exception
 {
 }

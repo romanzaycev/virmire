@@ -13,44 +13,56 @@ class Response
      * @var int
      */
     private $statusCode = 200;
-    
+
     /**
      * @var array
      */
     private $headers = [
         'Content-Type' => 'text/html; charset=UTF-8'
     ];
-    
+
     /**
      * @var string
      */
     private $body = '';
-    
+
     /**
      * @var bool
      */
     private $isRedirect = false;
-    
+
     /**
-     * @param int $code
+     * Set HTTP status code.
+     *
+     * @param int $code Status code
      *
      * @return Response
-     * @throws HttpException
+     * @throws Exceptions\HttpResponseException
      */
     public function setStatusCode(int $code) : Response
     {
         if ((100 > $code) || (599 < $code)) {
-            throw new HttpException(
+            throw new Exceptions\HttpResponseException(
                 sprintf('Invalid HTTP response code, %u', $code)
             );
         }
-        
+
         $this->isRedirect = (300 <= $code) && (307 >= $code);
         $this->statusCode = $code;
-        
+
         return $this;
     }
-    
+
+    /**
+     * Get HTTP Status code.
+     *
+     * @return int Status code
+     */
+    public function getStatusCode() : int
+    {
+        return $this->statusCode;
+    }
+
     /**
      * @return bool
      */
@@ -58,7 +70,7 @@ class Response
     {
         return $this->isRedirect;
     }
-    
+
     /**
      * @param string $name
      * @param string $value
@@ -68,10 +80,10 @@ class Response
     public function setHeader(string $name, string $value) : Response
     {
         $this->headers[$name] = $value;
-        
+
         return $this;
     }
-    
+
     /**
      * @return array
      */
@@ -79,19 +91,19 @@ class Response
     {
         return $this->headers;
     }
-    
+
     /**
      * @return Response
      */
     public function writeHeaders() : Response
     {
-        if (!headers_sent()) {
+        if (!\headers_sent()) {
             $statusCodeSent = false;
-            
+
             if (count($this->headers) == 0) {
                 return $this;
             }
-            
+
             foreach ($this->headers as $headerName => $headerValue) {
                 if (!$statusCodeSent) {
                     header(
@@ -99,7 +111,7 @@ class Response
                         false,
                         $this->statusCode
                     );
-                    
+
                     $statusCodeSent = true;
                 } else {
                     header(
@@ -108,20 +120,20 @@ class Response
                 }
             }
         }
-        
+
         return $this;
     }
-    
+
     /**
      * @return Response
      */
     public function writeBody() : Response
     {
         echo $this->body;
-        
+
         return $this;
     }
-    
+
     /**
      * @param string $body
      */
@@ -129,7 +141,7 @@ class Response
     {
         $this->body = $body;
     }
-    
+
     /**
      * @return string
      */
@@ -137,7 +149,7 @@ class Response
     {
         return $this->body;
     }
-    
+
     /**
      * @return void
      */
