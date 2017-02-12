@@ -23,7 +23,7 @@ class Configuration
      *
      * @param array $configuration
      */
-    public function __construct(array $configuration)
+    public function __construct(array $configuration = [])
     {
         $this->configuration = $configuration;
     }
@@ -63,12 +63,12 @@ class Configuration
         }
         
         throws:{
-        if ($default === null) {
-            throw new ConfigurationException(sprintf('Configuration key "%s" is not defined', $name), $name);
-        } else {
-            return $default;
+            if ($default === null) {
+                throw new ConfigurationException(sprintf('Configuration key "%s" is not defined', $name), $name);
+            } else {
+                return $default;
+            }
         }
-    }
     }
     
     /**
