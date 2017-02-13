@@ -67,4 +67,15 @@ class ResponseTest extends PHPUnit_Framework_TestCase
         ob_end_clean();
         $this->assertEquals($body, $output);
     }
+
+    public function testWriteResponse()
+    {
+        $body = 'foo';
+        $this->response->setBody($body);
+        ob_start();
+        $this->response->sendResponse();
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertEquals($body, $output);
+    }
 }
