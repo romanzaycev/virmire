@@ -3,7 +3,7 @@
 namespace Virmire\Events;
 
 use Virmire\Collections\Collection;
-use Virmire\Collections\TypeCollection;
+use Virmire\Collections\TypedCollection;
 
 /**
  * Class Emitter
@@ -37,7 +37,7 @@ class Emitter extends AbstractEventSystem
     protected function addListener(string $event, Listener $listener)
     {
         if (!$this->listeners->has($event)) {
-            $this->listeners->addItem($event, new class(Listener::class) extends TypeCollection
+            $this->listeners->addItem($event, new class(Listener::class) extends TypedCollection
             {
             });
         }

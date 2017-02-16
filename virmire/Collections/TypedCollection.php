@@ -3,19 +3,19 @@
 namespace Virmire\Collections;
 
 /**
- * Class TypeCollection
+ * Class TypedCollection
  *
  * @package Virmire\Collections
  */
-class TypeCollection extends Collection
+class TypedCollection extends Collection
 {
     /**
      * @var string
      */
     private $type;
-    
+
     /**
-     * TypeCollection constructor.
+     * TypedCollection constructor.
      *
      * @param string $type
      * @param array $data
@@ -23,14 +23,14 @@ class TypeCollection extends Collection
     public function __construct(string $type, array $data = [])
     {
         parent::__construct();
-        
+
         $this->type = $type;
-        
+
         foreach ($data as $k => $v) {
             $this->addItem($k, $v);
         }
     }
-    
+
     /**
      * @param string|int $key
      * @param mixed $object
@@ -41,15 +41,15 @@ class TypeCollection extends Collection
     public function addItem($key, $object)
     {
         $type = get_class($object);
-        
+
         if ($type !== $this->type) {
             throw new \TypeError(sprintf('Сollection type "%s" does not match argument type: "%s"', $this->type,
                 $type));
         }
-        
+
         parent::addItem($key, $object);
     }
-    
+
     /**
      * @return string
      */

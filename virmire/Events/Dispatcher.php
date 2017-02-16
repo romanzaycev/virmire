@@ -2,8 +2,10 @@
 
 namespace Virmire\Events;
 
-use Virmire\Traits\Singleton;
 use Virmire\Collections;
+use Virmire\Collections\Collection;
+use Virmire\Collections\TypedCollection;
+use Virmire\Traits\Singleton;
 
 /**
  * Event dispatcher.
@@ -12,19 +14,19 @@ use Virmire\Collections;
  */
 class Dispatcher
 {
-    
+
     use Singleton;
-    
+
     /**
-     * @var Collections\TypeCollection
+     * @var TypedCollection
      */
     private $emitters;
-    
+
     /**
-     * @var Collections\TypeCollection
+     * @var TypedCollection
      */
     private $delayedListeners;
-    
+
     /**
      * Event dispatcher initialize.
      *
@@ -32,15 +34,33 @@ class Dispatcher
      */
     protected function init()
     {
-        $this->emitters = new class(Emitter::class) extends Collections\TypeCollection
+        $this->emitters = new class(Emitter::class) extends TypedCollection
         {
+            /**
+             * @param $key
+             *
+             * @return Emitter
+             */
+            public function getItem($key) : Emitter
+            {
+                return parent::getItem($key);
+            }
         };
-        
-        $this->delayedListeners = new class(Collections\Collection::class) extends Collections\TypeCollection
+
+        $this->delayedListeners = new class(Collection::class) extends TypedCollection
         {
+            /**
+             * @param $key
+             *
+             * @return Collection
+             */
+            public function getItem($key) : Collection
+            {
+                return parent::getItem($key);
+            }
         };
     }
-    
+
     /**
      * Emitter registration.
      *
@@ -52,14 +72,14 @@ class Dispatcher
     public function register($object, Emitter $emitter)
     {
         $class = get_class($object);
-        
+
         if (!is_object($object)) {
             throw new \TypeError('Argument 1 passed to register method must be an instance of object');
         }
-        
+
         $this->emitters->addItem($class, $emitter);
         $this->makeContext($emitter, $object);
-        
+
         if ($this->delayedListeners->has($class)) {
             foreach ($this->delayedListeners->getItem($class) as $listenerId => $onArgs) {
                 call_user_func_array([$this, 'on'], $onArgs);
@@ -67,7 +87,7 @@ class Dispatcher
             $this->delayedListeners->deleteItem($class);
         }
     }
-    
+
     /**
      * Check class for event emitter.
      *
@@ -79,7 +99,7 @@ class Dispatcher
     {
         return $this->emitters->has($className);
     }
-    
+
     /**
      * Subscribe to event.
      *
@@ -98,15 +118,15 @@ class Dispatcher
              */
             $emitter = $this->emitters->getItem($class);
             $this->makeListener($event, $emitter, $listener);
-            
+
             if ($bindTo !== null) {
                 $this->makeContext($listener, $bindTo);
             }
         } else {
             if (!$this->delayedListeners->has($class)) {
-                $this->delayedListeners->addItem($class, new Collections\Collection());
+                $this->delayedListeners->addItem($class, new Collection());
             }
-            
+
             $this->delayedListeners->getItem($class)->addItem(
                 $listener->getUniqId(),
                 [
@@ -118,7 +138,7 @@ class Dispatcher
             );
         }
     }
-    
+
     /**
      * @param AbstractEventSystem $object
      * @param $context
@@ -130,7 +150,7 @@ class Dispatcher
         };
         $proxy->call($object);
     }
-    
+
     /**
      * @param string $event
      * @param Emitter $emitter
