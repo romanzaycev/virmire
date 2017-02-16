@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Virmire\Iterfaces\Http\Message;
+namespace Virmire\Http\Message;
 
 /**
  * HTTP messages consist of requests from a client to a server and responses

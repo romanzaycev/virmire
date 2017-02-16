@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Virmire\Iterfaces\Http\Message;
+namespace Virmire\Http\Message;
 
 /**
  * Value object representing a file uploaded through an HTTP request.
