@@ -13,7 +13,7 @@ class TypedCollection extends Collection
      * @var string
      */
     private $type;
-
+    
     /**
      * TypedCollection constructor.
      *
@@ -23,14 +23,14 @@ class TypedCollection extends Collection
     public function __construct(string $type, array $data = [])
     {
         parent::__construct();
-
+        
         $this->type = $type;
-
+        
         foreach ($data as $k => $v) {
             $this->addItem($k, $v);
         }
     }
-
+    
     /**
      * @param string|int $key
      * @param mixed $object
@@ -41,7 +41,7 @@ class TypedCollection extends Collection
     public function addItem($key, $object)
     {
         $this->checkType($object);
-
+        
         parent::addItem($key, $object);
     }
     
@@ -82,7 +82,7 @@ class TypedCollection extends Collection
     private function checkType($object)
     {
         $type = get_class($object);
-    
+        
         if ($type !== $this->type) {
             throw new \TypeError(sprintf('Сollection type "%s" does not match argument type: "%s"', $this->type,
                 $type));

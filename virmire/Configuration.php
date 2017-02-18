@@ -12,12 +12,12 @@ use Virmire\Exceptions\ConfigurationException;
 class Configuration
 {
     const SEPARATOR = '.';
-    
+
     /**
      * @var array
      */
     protected $configuration = [];
-    
+
     /**
      * Configuration constructor.
      *
@@ -27,7 +27,7 @@ class Configuration
     {
         $this->configuration = $configuration;
     }
-    
+
     /**
      * Get configuration item by name or name path
      *
@@ -41,10 +41,10 @@ class Configuration
     {
         if (strpos($name, self::SEPARATOR) !== false) {
             $keys = explode(self::SEPARATOR, $name);
-            
+
             $previous = $this->configuration;
             $previousKeyPath = '';
-            
+
             foreach ($keys as $key) {
                 $previousKeyPath .= self::SEPARATOR . $key;
                 if (array_key_exists($key, $previous)) {
@@ -54,15 +54,15 @@ class Configuration
                     goto throws;
                 }
             }
-            
+
             return $previous;
         } else {
             if (array_key_exists($name, $this->configuration)) {
                 return $this->configuration[$name];
             }
         }
-        
-        throws:{
+
+        throws: {
             if ($default === null) {
                 throw new ConfigurationException(sprintf('Configuration key "%s" is not defined', $name), $name);
             } else {
@@ -70,7 +70,7 @@ class Configuration
             }
         }
     }
-    
+
     /**
      * @param string $name
      *
