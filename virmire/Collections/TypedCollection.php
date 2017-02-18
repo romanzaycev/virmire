@@ -40,21 +40,52 @@ class TypedCollection extends Collection
      */
     public function addItem($key, $object)
     {
-        $type = get_class($object);
-
-        if ($type !== $this->type) {
-            throw new \TypeError(sprintf('Сollection type "%s" does not match argument type: "%s"', $this->type,
-                $type));
-        }
+        $this->checkType($object);
 
         parent::addItem($key, $object);
     }
-
+    
+    /**
+     * @return bool
+     * @throws \TypeError
+     */
+    public function contains($object) : bool
+    {
+        $this->checkType($object);
+        
+        return parent::contains($object);
+    }
+    
+    /**
+     * @throws \TypeError
+     */
+    public function retain($object)
+    {
+        $this->checkType($object);
+        
+        parent::retain($object);
+    }
+    
     /**
      * @return string
      */
     public function getType()
     {
         return $this->type;
+    }
+    
+    /**
+     * @param mixed $object
+     *
+     * @throws \TypeError
+     */
+    private function checkType($object)
+    {
+        $type = get_class($object);
+    
+        if ($type !== $this->type) {
+            throw new \TypeError(sprintf('Сollection type "%s" does not match argument type: "%s"', $this->type,
+                $type));
+        }
     }
 }
