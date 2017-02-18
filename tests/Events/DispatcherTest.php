@@ -1,54 +1,14 @@
 <?php
 
 use Virmire\Events\Dispatcher;
-use \Virmire\Events\Emitter;
-use \Virmire\Events\Listener;
+use Virmire\Events\Listener;
 
-class DispatcherEmitterTestClass
+class DispatcherEmitterMock
 {
-    
-    /**
-     * @param Dispatcher $dispatcher
-     * @param Emitter $emitter
-     *
-     * @throws TypeError
-     */
-    public function registerEmitter(Dispatcher $dispatcher, Emitter $emitter)
-    {
-        $dispatcher->register($this, $emitter);
-    }
-    
-    /**
-     * @param Emitter $emitter
-     * @param string $event
-     * @param $data
-     */
-    public function emit(Emitter $emitter, string $event, $data)
-    {
-        $emitter->emit($event, $data);
-    }
-    
 }
 
-class DispatcherListenerTestClass
+class DispatcherContextMock
 {
-    
-    /**
-     * @param Dispatcher $dispatcher
-     * @param string $event
-     * @param Listener $listener
-     * @param null $bindTo
-     */
-    public function subscribe(Dispatcher $dispatcher, string $event, Listener $listener, $bindTo = null)
-    {
-        $dispatcher->on(DispatcherEmitterTestClass::class, $event, $listener, $bindTo);
-    }
-    
-}
-
-class DispatcherContextTestClass
-{
-    
 }
 
 class DispatcherTest extends PHPUnit_Framework_TestCase
@@ -80,107 +40,86 @@ class DispatcherTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Dispatcher::class, $this->dispatcher);
     }
     
-    public function testDispatcherRegisterClass()
+    public function testDispatcherRegisterInstance()
     {
-        $foo = new DispatcherEmitterTestClass();
-        
-        $foo->registerEmitter($this->dispatcher, new Emitter());
-        
-        $this->assertTrue($this->dispatcher->hasEmitter(DispatcherEmitterTestClass::class));
+        $instance = new DispatcherEmitterMock();
+        $this->dispatcher->register($instance);
+        $this->assertTrue($this->dispatcher->hasEmitter($instance));
     }
     
     public function testDispatcherRegisterWithWrongArgument()
     {
-        $this->expectException(\TypeError::class);
-        $this->dispatcher->register('', new Emitter());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->dispatcher->register('');
     }
     
-    public function testDispatcherHasWithNoRegisteredClass()
+    public function testDispatcherHasWithNoRegisteredInstance()
     {
-        $this->assertFalse($this->dispatcher->hasEmitter(DispatcherEmitterTestClass::class));
+        $this->assertFalse($this->dispatcher->hasEmitter(new DispatcherEmitterMock()));
     }
     
     public function testDispatcherWithDelayedRegister()
     {
-        $foo = new DispatcherListenerTestClass();
-        $foo->subscribe($this->dispatcher, 'onEvent', new Listener(function () {
-        }));
-        
-        $this->assertFalse($this->dispatcher->hasEmitter(DispatcherEmitterTestClass::class));
+        $eventName = 'onEvent';
+        $instance = new DispatcherEmitterMock();
+        $this->dispatcher->on(
+            $instance,
+            $eventName,
+            new Listener(
+                function ($data) {
+                }
+            )
+        );
+        $this->assertFalse($this->dispatcher->hasEmitter($instance));
     }
     
     public function testDispatcherWithEmitterEmit()
     {
-        $event = 'onEvent';
-        $data = 'Event data string';
-        
-        $emitter = new Emitter();
-        
-        $foo = new DispatcherEmitterTestClass();
-        $foo->registerEmitter($this->dispatcher, $emitter);
-        
-        $bar = new DispatcherListenerTestClass();
-        $bar->subscribe(
-            $this->dispatcher,
-            $event,
+        $eventName = 'onEvent';
+        $eventData = 'foo';
+        $instance = new DispatcherEmitterMock();
+        $emitter = $this->dispatcher->register($instance);
+        $this->dispatcher->on(
+            $instance,
+            $eventName,
             new Listener(
-                function ($evData) use ($data) {
-                    $this->assertEquals($data, $evData);
+                function ($data) use ($eventData) {
+                    $this->assertEquals($eventData, $data);
                 }
             )
         );
-        
-        $foo->emit($emitter, $event, $data);
+        $emitter->emit($eventName, $eventData);
     }
     
     public function testDispatcherWithDelayedRegisteredEmitterEmit()
     {
-        $event = 'onEvent';
-        $data = 'Event data string';
-        
-        $bar = new DispatcherListenerTestClass();
-        $bar->subscribe(
-            $this->dispatcher,
-            $event,
+        $eventName = 'onEvent';
+        $eventData = 'foo';
+        $instance = new DispatcherEmitterMock();
+        $this->dispatcher->on(
+            $instance,
+            $eventName,
             new Listener(
-                function ($evData) use ($data) {
-                    $this->assertEquals($data, $evData);
+                function ($data) use ($eventData) {
+                    $this->assertEquals($eventData, $data);
                 }
             )
         );
-        
-        $emitter = new Emitter();
-        
-        $foo = new DispatcherEmitterTestClass();
-        $foo->registerEmitter($this->dispatcher, $emitter);
-        $foo->emit($emitter, $event, $data);
+        $emitter = $this->dispatcher->register($instance);
+        $emitter->emit($eventName, $eventData);
     }
     
     public function testDispatcherEmitWithChangedContext()
     {
-        $event = 'onEvent';
-        
-        $emitter = new Emitter();
-        
-        $foo = new DispatcherEmitterTestClass();
-        $foo->registerEmitter($this->dispatcher, $emitter);
-        
-        $context = new DispatcherContextTestClass();
-        
+        $eventName = 'onEvent';
+        $instance = new DispatcherEmitterMock();
+        $context = new DispatcherContextMock();
+        $emitter = $this->dispatcher->register($instance);
         $self = $this;
-        
-        $bar = new DispatcherListenerTestClass();
-        $bar->subscribe(
-            $this->dispatcher,
-            $event,
-            new Listener(
-                function () use ($self) {
-                    $self->assertInstanceOf(DispatcherContextTestClass::class, $this);
-                }
-            ),
-            $context
-        );
-        
-        $foo->emit($emitter, $event, null);
+        $listener = new Listener(function () use ($self) {
+            $self->assertInstanceOf(DispatcherContextMock::class, $this);
+        });
+        $this->dispatcher->on($instance, $eventName, $listener, $context);
+        $emitter->emit($eventName);
     }
 }

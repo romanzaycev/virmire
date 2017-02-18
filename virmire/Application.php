@@ -2,7 +2,7 @@
 
 namespace Virmire;
 
-use Virmire\Events;
+use Virmire\Events\EventEmitterTrait;
 use Virmire\Interfaces\ContainerInterface;
 use Virmire\Http\Request;
 use Virmire\Http\Response;
@@ -13,31 +13,25 @@ use Virmire\Http\Response;
  * @package Virmire
  *
  * @property-read Configuration $settings Application settings
- * @property-read Events\Dispatcher $eventDispatcher
  */
 class Application
 {
+    use EventEmitterTrait;
+    
     /**
      * @var ContainerInterface
      */
     private $container;
     
     /**
-     * @var Events\Emitter
-     */
-    private $emitter;
-    
-    /**
      * Application constructor.
      *
-     * @param ContainerInterface|null $container
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        
-        $this->emitter = new Events\Emitter();
-        $this->eventDispatcher->register($this, $this->emitter);
+        $this->initEmitter();
     }
     
     /**
@@ -49,7 +43,7 @@ class Application
      */
     public function handle(Request $request)
     {
-        $this->emitter->emit('onRequest', $request);
+        $this->emit('request', $request);
         
         return new Response();
     }

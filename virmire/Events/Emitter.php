@@ -10,13 +10,13 @@ use Virmire\Collections\TypedCollection;
  *
  * @package Virmire\Events
  */
-class Emitter extends AbstractEventSystem
+class Emitter extends AbstractEventElement
 {
     
     /**
      * @var Collection
      */
-    private $listeners = [];
+    private $listeners;
     
     /**
      * Emitter constructor.
@@ -31,34 +31,52 @@ class Emitter extends AbstractEventSystem
     /**
      * Add event listener.
      *
-     * @param string $event
+     * @param string $eventName
      * @param Listener $listener
      */
-    protected function addListener(string $event, Listener $listener)
+    protected function addListener(string $eventName, Listener $listener)
     {
-        if (!$this->listeners->has($event)) {
-            $this->listeners->addItem($event, new class(Listener::class) extends TypedCollection
-            {
-            });
+        if (!$this->listeners->has($eventName)) {
+            $this->listeners->addItem(
+                $eventName,
+                new class(Listener::class) extends TypedCollection
+                {
+                    public function getItem($key) : Listener
+                    {
+                        return parent::getItem($key);
+                    }
+                }
+            );
         }
         
-        $this->listeners->getItem($event)->addItem($listener->getUniqId(), $listener);
+        $this->listeners->getItem($eventName)->addItem($listener->getUniqId(), $listener);
+    }
+    
+    /**
+     * @param Listener $listener
+     *
+     * @return void
+     * @throws \Virmire\Collections\Exceptions\CollectionInvalidKeyException
+     */
+    protected function removeListener(Listener $listener)
+    {
+        $this->listeners->getItem($listener->getEventName())->retain($listener);
     }
     
     /**
      * Fire the event.
      *
-     * @param string $event
+     * @param string $eventName Event name
      * @param mixed|null $data
      *
      * @return bool
      */
-    public function emit(string $event, &$data) : bool
+    public function emit(string $eventName, &$data = null) : bool
     {
         $isPrevented = false;
         
-        if ($this->listeners->has($event)) {
-            foreach ($this->listeners->getItem($event) as $listener) {
+        if ($this->listeners->has($eventName)) {
+            foreach ($this->listeners->getItem($eventName) as $listener) {
                 $isPrevented = $this->fire($listener, $data);
                 
                 if ($isPrevented) {

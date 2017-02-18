@@ -12,21 +12,25 @@ use Virmire\Traits\Singleton;
  *
  * @package Virmire\Events
  */
-class Dispatcher
+class Dispatcher extends AbstractEventSystem
 {
-
     use Singleton;
-
+    
     /**
-     * @var TypedCollection
+     * @var TypedCollection<Emitter>
      */
     private $emitters;
-
+    
     /**
-     * @var TypedCollection
+     * @var Collection
+     */
+    private $instances;
+    
+    /**
+     * @var TypedCollection<Listener>
      */
     private $delayedListeners;
-
+    
     /**
      * Event dispatcher initialize.
      *
@@ -46,7 +50,7 @@ class Dispatcher
                 return parent::getItem($key);
             }
         };
-
+        
         $this->delayedListeners = new class(Collection::class) extends TypedCollection
         {
             /**
@@ -59,108 +63,185 @@ class Dispatcher
                 return parent::getItem($key);
             }
         };
+        
+        $this->instances = new Collection();
     }
-
+    
     /**
-     * Emitter registration.
+     * Event emitter registration.
      *
-     * @param object $object
-     * @param Emitter $emitter
+     * @param object $instance
      *
-     * @throws \TypeError
+     * @return Emitter
+     * @throws Collections\Exceptions\CollectionInvalidKeyException
      */
-    public function register($object, Emitter $emitter)
+    public function register($instance)
     {
-        $class = get_class($object);
-
-        if (!is_object($object)) {
-            throw new \TypeError('Argument 1 passed to register method must be an instance of object');
+        if (!\is_object($instance)) {
+            throw new \InvalidArgumentException('First argument must to be instance of class');
         }
-
-        $this->emitters->addItem($class, $emitter);
-        $this->makeContext($emitter, $object);
-
-        if ($this->delayedListeners->has($class)) {
-            foreach ($this->delayedListeners->getItem($class) as $listenerId => $onArgs) {
+        
+        $emitter = new Emitter();
+        $instanceId = $this->ensureEventEmitterId($instance, $emitter);
+        $delayedId = $this->getDelayedId($instance);
+        
+        $this->emitters->addItem($instanceId, $emitter);
+        $this->makeContext($emitter, $instance);
+        
+        if ($this->delayedListeners->has($delayedId)) {
+            /**
+             * @var $delayedListenersCollection TypedCollection<Listener>
+             */
+            $delayedListenersCollection = $this->delayedListeners->getItem($delayedId);
+            foreach ($delayedListenersCollection as $listenerId => $onArgs) {
                 call_user_func_array([$this, 'on'], $onArgs);
+                $delayedListenersCollection->getItem($listenerId);
             }
-            $this->delayedListeners->deleteItem($class);
+            if ($delayedListenersCollection->count() === 0) {
+                $this->delayedListeners->deleteItem($delayedId);
+            }
         }
+        
+        return $emitter;
     }
-
+    
     /**
      * Check class for event emitter.
      *
-     * @param string $className
+     * @param object $instance
      *
      * @return bool
      */
-    public function hasEmitter(string $className) : bool
+    public function hasEmitter($instance) : bool
     {
-        return $this->emitters->has($className);
+        if (!\is_object($instance)) {
+            throw new \InvalidArgumentException('First argument must to be instance of class');
+        }
+        
+        $instanceId = $this->ensureEventEmitterId($instance);
+        
+        if ($instanceId === false) {
+            return false;
+        }
+        
+        return $this->instances->has($instanceId);
     }
-
+    
     /**
      * Subscribe to event.
      *
-     * @param string $class
-     * @param string $event
+     * @param object $instance
+     * @param string $eventName
      * @param Listener $listener
      * @param object|null $bindTo
      *
      * @throws Collections\Exceptions\CollectionInvalidKeyException
      */
-    public function on(string $class, string $event, Listener $listener, $bindTo = null)
+    public function on($instance, string $eventName, Listener $listener, $bindTo = null)
     {
-        if ($this->hasEmitter($class)) {
+        if (!\is_object($instance)) {
+            throw new \InvalidArgumentException('First argument must to be instance of class');
+        }
+        
+        if ($this->hasEmitter($instance)) {
+            $instanceId = $this->ensureEventEmitterId($instance);
+            
             /**
              * @var Emitter $emitter
              */
-            $emitter = $this->emitters->getItem($class);
-            $this->makeListener($event, $emitter, $listener);
-
-            if ($bindTo !== null) {
+            $emitter = $this->emitters->getItem($instanceId);
+            $this->makeLink($eventName, $emitter, $listener);
+            
+            if ($bindTo !== null && is_object($bindTo)) {
                 $this->makeContext($listener, $bindTo);
             }
         } else {
-            if (!$this->delayedListeners->has($class)) {
-                $this->delayedListeners->addItem($class, new Collection());
+            $delayedId = $this->getDelayedId($instance);
+            
+            if (!$this->delayedListeners->has($delayedId)) {
+                $this->delayedListeners->addItem($delayedId, new Collection());
             }
-
-            $this->delayedListeners->getItem($class)->addItem(
+            
+            $this->delayedListeners->getItem($delayedId)->addItem(
                 $listener->getUniqId(),
                 [
-                    'class'    => $class,
-                    'event'    => $event,
-                    'listener' => $listener,
-                    'bindTo'   => $bindTo
+                    'instance'  => $instance,
+                    'eventName' => $eventName,
+                    'listener'  => $listener,
+                    'bindTo'    => $bindTo
                 ]
             );
         }
     }
-
+    
     /**
-     * @param AbstractEventSystem $object
-     * @param $context
+     * @param AbstractEventElement $eventElement
+     * @param object $context
      */
-    private function makeContext(AbstractEventSystem $object, $context)
+    private function makeContext(AbstractEventElement $eventElement, $context)
     {
-        $proxy = function () use ($object, $context) {
-            $object->setContext($context);
+        $proxy = function () use ($eventElement, $context) {
+            $eventElement->setContext($context);
         };
-        $proxy->call($object);
+        $proxy->call($eventElement);
     }
-
+    
     /**
-     * @param string $event
+     * @param string $eventName
      * @param Emitter $emitter
      * @param Listener $listener
      */
-    private function makeListener(string $event, Emitter $emitter, Listener $listener)
+    private function makeLink(string $eventName, Emitter $emitter, Listener $listener)
     {
-        $proxy = function () use ($event, $emitter, $listener) {
-            $emitter->addListener($event, $listener);
+        $emitterProxy = function () use ($eventName, $emitter, $listener) {
+            $emitter->addListener($eventName, $listener);
         };
-        $proxy->call($emitter);
+        $listenerProxy = function () use ($eventName, $emitter, $listener) {
+            $listener->setEmitter($emitter);
+            $listener->setEventName($eventName);
+        };
+        $emitterProxy->call($emitter);
+        $listenerProxy->call($listener);
+    }
+    
+    /**
+     * @param object $instance
+     * @param Emitter|null $emitter
+     *
+     * @return string
+     * @throws Collections\Exceptions\CollectionKeyHasUseException
+     */
+    private function ensureEventEmitterId($instance, $emitter = null) : string
+    {
+        if (!\is_object($instance)) {
+            throw new \InvalidArgumentException('First argument must to be instance of class');
+        }
+        
+        if ($emitter !== null) {
+            $emitterId = $emitter->getUniqId();
+            if (!$this->instances->has($emitterId)) {
+                $this->instances->addItem($emitterId, $instance);
+            }
+            
+            return $emitterId;
+        }
+        
+        $emitterId = array_search($instance, $this->instances->toArray(), true);
+        
+        if ($emitterId === false) {
+            return $this->getDelayedId($instance);
+        }
+        
+        return $emitterId;
+    }
+    
+    /**
+     * @param object $instance
+     *
+     * @return string
+     */
+    private function getDelayedId($instance)
+    {
+        return 'delayed-' . get_class($instance);
     }
 }

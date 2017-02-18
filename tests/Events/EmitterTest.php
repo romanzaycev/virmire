@@ -20,20 +20,17 @@ class EmitterTest extends PHPUnit_Framework_TestCase
     
     public function testEmitterWithPreventedEvent()
     {
-        $listener = new Listener(function ($evData, &$isPrevented) {
-            $isPrevented = true;
+        $dispatcher = Dispatcher::getInstance();
+        
+        $instance = new EmitterTestClassEmit();
+        $emitter = $dispatcher->register($instance);
+        
+        $listener = new Listener(function () {
+            return false;
         });
-        Dispatcher::getInstance()->on(EmitterTestClassEmit::class, 'onEvent', $listener);
         
-        $foo = new EmitterTestClassEmit();
-        $emitter = new Emitter();
+        $dispatcher->on($instance, 'onEvent', $listener);
         
-        $proxy = function () use ($foo, $emitter) {
-            Dispatcher::getInstance()->register($this, $emitter);
-        };
-        $proxy->call($foo);
-        
-        $data = [];
-        $this->assertTrue($emitter->emit('onEvent', $data));
+        $this->assertTrue($emitter->emit('onEvent'));
     }
 }

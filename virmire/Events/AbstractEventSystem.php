@@ -10,30 +10,9 @@ namespace Virmire\Events;
 abstract class AbstractEventSystem
 {
     /**
-     * @var string
-     */
-    protected $uniqId;
-    
-    /**
      * @var object
      */
     private $context = null;
-    
-    /**
-     * AbstractEventSystem constructor.
-     */
-    public function __construct()
-    {
-        $this->uniqId = uniqid();
-    }
-    
-    /**
-     * @return string
-     */
-    final public function getUniqId() : string
-    {
-        return $this->uniqId;
-    }
     
     /**
      * @param object $object

@@ -7,13 +7,23 @@ namespace Virmire\Events;
  *
  * @package Virmire\Events
  */
-class Listener extends AbstractEventSystem
+class Listener extends AbstractEventElement
 {
     
     /**
      * @var \Closure
      */
     private $callback;
+    
+    /**
+     * @var Emitter
+     */
+    private $emitter;
+    
+    /**
+     * @var string
+     */
+    private $eventName;
     
     /**
      * Listener constructor.
@@ -28,21 +38,52 @@ class Listener extends AbstractEventSystem
     }
     
     /**
+     * @return void
+     */
+    public function unbind()
+    {
+        $this->emitter->removeListener($this);
+    }
+    
+    /**
+     * @param Emitter $emitter
+     */
+    protected function setEmitter(Emitter $emitter)
+    {
+        $this->emitter = $emitter;
+    }
+    
+    /**
+     * @param string $eventName
+     */
+    protected function setEventName(string $eventName)
+    {
+        $this->eventName = $eventName;
+    }
+    
+    /**
+     * @return string
+     */
+    protected function getEventName() : string
+    {
+        return $this->eventName;
+    }
+    
+    /**
      * @param mixed $data
      *
      * @return bool
      */
     protected function onEmit(&$data) : bool
     {
-        $isPrevented = false;
         $callback = $this->callback;
         
         if ($this->hasContext()) {
-            $callback->call($this->getContext(), $data, $isPrevented);
+            $result = $callback->call($this->getContext(), $data);
         } else {
-            $callback($data, $isPrevented);
+            $result = $callback($data);
         }
         
-        return $isPrevented;
+        return !($result);
     }
 }
