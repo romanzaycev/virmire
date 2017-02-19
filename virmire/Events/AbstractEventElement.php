@@ -3,7 +3,7 @@
 namespace Virmire\Events;
 
 /**
- * Class AbstractEventSystem
+ * Class AbstractEventElement
  *
  * @package Virmire\Events
  */

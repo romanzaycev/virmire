@@ -12,7 +12,6 @@ use Virmire\Collections\TypedCollection;
  */
 class Emitter extends AbstractEventElement
 {
-    
     /**
      * @var Collection
      */
