@@ -13,17 +13,17 @@ class Listener extends AbstractEventElement
      * @var \Closure
      */
     private $callback;
-    
+
     /**
      * @var Emitter
      */
     private $emitter;
-    
+
     /**
      * @var string
      */
     private $eventName;
-    
+
     /**
      * Listener constructor.
      *
@@ -32,18 +32,22 @@ class Listener extends AbstractEventElement
     public function __construct(\Closure $callback)
     {
         parent::__construct();
-        
+
         $this->callback = $callback;
     }
-    
+
     /**
      * @return void
      */
     public function unbind()
     {
-        $this->emitter->removeListener($this);
+        $self = $this;
+        $proxy = function () use ($self) {
+            $this->removeListener($self);
+        };
+        $proxy->call($this->emitter);
     }
-    
+
     /**
      * @param Emitter $emitter
      */
@@ -51,7 +55,7 @@ class Listener extends AbstractEventElement
     {
         $this->emitter = $emitter;
     }
-    
+
     /**
      * @param string $eventName
      */
@@ -59,15 +63,15 @@ class Listener extends AbstractEventElement
     {
         $this->eventName = $eventName;
     }
-    
+
     /**
      * @return string
      */
-    protected function getEventName() : string
+    public function getEventName() : string
     {
         return $this->eventName;
     }
-    
+
     /**
      * @param mixed $data
      *
@@ -76,13 +80,13 @@ class Listener extends AbstractEventElement
     protected function onEmit(&$data) : bool
     {
         $callback = $this->callback;
-        
+
         if ($this->hasContext()) {
             $result = $callback->call($this->getContext(), $data);
         } else {
             $result = $callback($data);
         }
-        
+
         return !($result);
     }
 }

@@ -41,9 +41,11 @@ trait EventEmitter
      *
      * @return Listener
      */
-    public function on(string $event, \Closure $handler, $bindTo = null)
+    public function on(string $event, \Closure $handler, $bindTo = null) : Listener
     {
-        return static::$dispatcher->on($this, $event, new Listener($handler), $bindTo);
+        $listener = new Listener($handler);
+        static::$dispatcher->on($this, $event, $listener, $bindTo);
+        return $listener;
     }
 
     /**
