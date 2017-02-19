@@ -2,7 +2,7 @@
 
 namespace Virmire;
 
-use Virmire\Events\EventEmitterTrait;
+use Virmire\Events\Traits\EventEmitter;
 use Virmire\Interfaces\ContainerInterface;
 use Virmire\Http\Request;
 use Virmire\Http\Response;
@@ -16,7 +16,7 @@ use Virmire\Http\Response;
  */
 class Application
 {
-    use EventEmitterTrait;
+    use EventEmitter;
     
     /**
      * @var ContainerInterface

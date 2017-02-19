@@ -1,11 +1,11 @@
 <?php
 
-use Virmire\Events\EventEmitterTrait;
 use Virmire\Events\Dispatcher;
+use Virmire\Events\Traits\EventEmitter;
 
 class EventEmitterMock
 {
-    use EventEmitterTrait;
+    use EventEmitter;
     
     public function __construct()
     {

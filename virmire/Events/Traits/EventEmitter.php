@@ -1,24 +1,28 @@
 <?php declare(strict_types = 1);
 
-namespace Virmire\Events;
+namespace Virmire\Events\Traits;
+
+use Virmire\Events\Dispatcher;
+use Virmire\Events\Emitter;
+use Virmire\Events\Listener;
 
 /**
- * Trait EventEmitterTrait
+ * Trait EventEmitter
  *
- * @package Virmire\Events
+ * @package Virmire\Events\Traits
  */
-trait EventEmitterTrait
+trait EventEmitter
 {
     /**
      * @var Dispatcher
      */
     private static $dispatcher;
-    
+
     /**
      * @var Emitter
      */
     private static $emitter;
-    
+
     /**
      * @throws \TypeError
      */
@@ -27,7 +31,7 @@ trait EventEmitterTrait
         static::$dispatcher = Dispatcher::getInstance();
         static::$emitter = static::$dispatcher->register($this);
     }
-    
+
     /**
      * Event subscription.
      *
@@ -41,7 +45,7 @@ trait EventEmitterTrait
     {
         return static::$dispatcher->on($this, $event, new Listener($handler), $bindTo);
     }
-    
+
     /**
      * Emit event.
      *
