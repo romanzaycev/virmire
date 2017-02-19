@@ -1,5 +1,7 @@
 <?php
 
+namespace VirmireTests\Events;
+
 use Virmire\Events\Dispatcher;
 use Virmire\Events\Traits\EventEmitter;
 
@@ -18,7 +20,7 @@ class EventEmitterMock
     }
 }
 
-class EventEmitterTraitTest extends PHPUnit_Framework_TestCase
+class EventEmitterTraitTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var EventEmitterMock

@@ -1,9 +1,11 @@
 <?php
 
+namespace VirmireTests\Application;
+
 use Virmire\Application;
 use Virmire\Container;
 
-class ApplicationTest extends PHPUnit_Framework_TestCase
+class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
     public function testApplicationWithWrongContainerArgument()
     {
@@ -14,10 +16,10 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
     public function testApplicationConstruct()
     {
         $c = new Container([
-            'eventDispatcher' => Virmire\Events\Dispatcher::getInstance()
+            'foo' => 'bar'
         ]);
         $a = new Application($c);
         
-        $this->assertEquals(Virmire\Events\Dispatcher::getInstance(), $a->eventDispatcher);
+        $this->assertEquals('bar', $a->foo);
     }
 }

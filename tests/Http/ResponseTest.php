@@ -1,11 +1,14 @@
 <?php
 
+namespace VirmireTests\Http;
+
+use Virmire\Http\Exceptions\HttpResponseException;
 use Virmire\Http\Response;
 
 /**
  * Class ResponseTest
  */
-class ResponseTest extends PHPUnit_Framework_TestCase
+class ResponseTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Response
@@ -27,7 +30,7 @@ class ResponseTest extends PHPUnit_Framework_TestCase
     
     public function testResponseSetWrongStatusCode()
     {
-        $this->expectException(Virmire\Http\Exceptions\HttpResponseException::class);
+        $this->expectException(HttpResponseException::class);
         $this->response->setStatusCode(1);
     }
     

@@ -1,11 +1,13 @@
 <?php
 
+namespace VirmireTests\Http;
+
 use Virmire\Http\Request;
 
-class RequestTest extends PHPUnit_Framework_TestCase
+class RequestTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Virmire\Http\Request
+     * @var Request
      */
     private $request;
     

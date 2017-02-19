@@ -9,7 +9,6 @@ namespace Virmire\Events;
  */
 class Listener extends AbstractEventElement
 {
-    
     /**
      * @var \Closure
      */

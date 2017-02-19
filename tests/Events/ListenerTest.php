@@ -1,8 +1,10 @@
 <?php
 
+namespace VirmireTests\Events;
+
 use Virmire\Events\Listener;
 
-class ListenerTest extends PHPUnit_Framework_TestCase
+class ListenerTest extends \PHPUnit_Framework_TestCase
 {
     public function testListenerConstruct()
     {

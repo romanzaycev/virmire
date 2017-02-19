@@ -1,12 +1,14 @@
 <?php
 
+namespace VirmireTests\Collections;
+
 use Virmire\Collections\Collection;
 use Virmire\Collections\Exceptions;
 
 /**
  * Class CollectionTest
  */
-class CollectionTest extends PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit_Framework_TestCase
 {
     public function testCollectionWithArrayConstruct()
     {

@@ -1,5 +1,7 @@
 <?php
 
+namespace VirmireTests\Events;
+
 use Virmire\Events\Emitter;
 use Virmire\Events\Dispatcher;
 use Virmire\Events\Listener;
@@ -8,7 +10,7 @@ class EmitterTestClassEmit
 {
 }
 
-class EmitterTest extends PHPUnit_Framework_TestCase
+class EmitterTest extends \PHPUnit_Framework_TestCase
 {
     public function testEmitterEmitWithNoListeners()
     {

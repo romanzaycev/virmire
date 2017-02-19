@@ -1,5 +1,7 @@
 <?php
 
+namespace VirmireTests\Collections;
+
 use Virmire\Collections\TypedCollection;
 use Virmire\Collections\Exceptions;
 
@@ -7,7 +9,7 @@ class TypeCollectionTestClass
 {
 }
 
-class TypedCollectionTest extends PHPUnit_Framework_TestCase
+class TypedCollectionTest extends \PHPUnit_Framework_TestCase
 {
     public function testTypedCollectionConstruct()
     {
@@ -34,8 +36,8 @@ class TypedCollectionTest extends PHPUnit_Framework_TestCase
     public function testTypedCollectionAddItemWithWrongType()
     {
         $tc = new TypedCollection(TypeCollectionTestClass::class);
-        $this->expectException(TypeError::class);
-        $tc->addItem('foo', new stdClass());
+        $this->expectException(\TypeError::class);
+        $tc->addItem('foo', new \stdClass());
     }
     
     public function testTypedCollectionAddItemsWithConstructor()
@@ -53,14 +55,14 @@ class TypedCollectionTest extends PHPUnit_Framework_TestCase
     public function testTypedCollectionRetainWithWrongType()
     {
         $tc = new TypedCollection(TypeCollectionTestClass::class);
-        $this->expectException(TypeError::class);
-        $tc->retain(new stdClass());
+        $this->expectException(\TypeError::class);
+        $tc->retain(new \stdClass());
     }
     
     public function testTypedCollectionContainsWithWrongType()
     {
         $tc = new TypedCollection(TypeCollectionTestClass::class);
-        $this->expectException(TypeError::class);
-        $tc->contains(new stdClass());
+        $this->expectException(\TypeError::class);
+        $tc->contains(new \stdClass());
     }
 }

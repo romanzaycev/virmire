@@ -1,5 +1,7 @@
 <?php
 
+namespace VirmireTests\Events;
+
 use Virmire\Events\Dispatcher;
 use Virmire\Events\Listener;
 
@@ -11,7 +13,7 @@ class DispatcherContextMock
 {
 }
 
-class DispatcherTest extends PHPUnit_Framework_TestCase
+class DispatcherTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Dispatcher

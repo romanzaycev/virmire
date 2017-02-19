@@ -1,9 +1,11 @@
 <?php
 
+namespace VirmireTests\Container;
+
 use Virmire\Container;
 use Virmire\Exceptions\ContainerException;
 
-class ContainerTest extends PHPUnit_Framework_TestCase
+class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructContainerWithWrongArgument()
     {

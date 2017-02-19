@@ -1,12 +1,14 @@
 <?php
 
+namespace VirmireTests\Configuration;
+
 use Virmire\Configuration;
 use Virmire\Exceptions\ConfigurationException;
 
 /**
  * Class ConfigurationTest.
  */
-class ConfigurationTest extends PHPUnit_Framework_TestCase
+class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructWithWrongParam()
     {
