@@ -10,7 +10,7 @@ namespace Virmire\Traits;
 trait Singleton
 {
     protected static $instance = null;
-    
+
     /**
      * @return static
      */
@@ -20,7 +20,7 @@ trait Singleton
             ? static::$instance
             : static::$instance = new static;
     }
-    
+
     /**
      * Singleton constructor.
      */
@@ -28,21 +28,22 @@ trait Singleton
     {
         $this->init();
     }
-    
+
     /**
      * Singleton initialization method.
      */
     protected function init()
     {
     }
-    
+
     /**
      * Protected magic wakeup method.
      */
+    /** @noinspection PhpUnusedPrivateMethodInspection */
     final private function __wakeup()
     {
     }
-    
+
     /**
      * Protected magic clone method.
      */

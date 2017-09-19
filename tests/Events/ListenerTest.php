@@ -32,6 +32,7 @@ class ListenerTest extends \PHPUnit_Framework_TestCase
     public function testListenerWithWrongCallback()
     {
         $this->expectException(\TypeError::class);
+        /** @noinspection PhpUnusedLocalVariableInspection */
         $foo = new Events\Listener('');
     }
 
