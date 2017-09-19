@@ -31,10 +31,10 @@ trait Singleton
 
     /**
      * Singleton initialization method.
+     *
+     * This method should to be implemented
      */
-    protected function init()
-    {
-    }
+    protected abstract function init() : void;
 
     /**
      * Protected magic wakeup method.
