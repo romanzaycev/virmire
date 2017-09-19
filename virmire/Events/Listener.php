@@ -7,7 +7,7 @@ namespace Virmire\Events;
  *
  * @package Virmire\Events
  */
-class Listener extends AbstractEventElement
+class Listener extends EventElement
 {
     /**
      * @var \Closure
@@ -41,8 +41,10 @@ class Listener extends AbstractEventElement
      */
     public function unbind()
     {
+        // @TODO: Rethink this place, protected-hack should to be removed
         $self = $this;
         $proxy = function () use ($self) {
+            /** @noinspection PhpUndefinedMethodInspection */
             $this->removeListener($self);
         };
         $proxy->call($this->emitter);

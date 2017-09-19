@@ -3,25 +3,25 @@
 namespace Virmire\Events;
 
 /**
- * Class AbstractEventElement
+ * Class EventElement
  *
  * @package Virmire\Events
  */
-abstract class AbstractEventElement extends AbstractEventSystem
+abstract class EventElement extends EventSystem
 {
     /**
      * @var string
      */
     protected $uniqId;
-    
+
     /**
-     * AbstractEventSystem constructor.
+     * EventSystem constructor.
      */
     public function __construct()
     {
         $this->uniqId = uniqid();
     }
-    
+
     /**
      * @return string
      */

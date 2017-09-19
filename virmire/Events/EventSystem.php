@@ -7,13 +7,13 @@ namespace Virmire\Events;
  *
  * @package Virmire\Events
  */
-abstract class AbstractEventSystem
+abstract class EventSystem
 {
     /**
      * @var object
      */
     private $context = null;
-    
+
     /**
      * @param object $object
      */
@@ -21,7 +21,7 @@ abstract class AbstractEventSystem
     {
         $this->context = $object;
     }
-    
+
     /**
      * @return object
      */
@@ -29,7 +29,7 @@ abstract class AbstractEventSystem
     {
         return $this->context;
     }
-    
+
     /**
      * @return bool
      */

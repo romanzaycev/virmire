@@ -10,26 +10,27 @@ use Virmire\Collections\TypedCollection;
  *
  * @package Virmire\Events
  */
-class Emitter extends AbstractEventElement
+class Emitter extends EventElement
 {
     /**
      * @var Collection
      */
     private $listeners;
-    
+
     /**
      * Emitter constructor.
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->listeners = new Collection();
     }
-    
+
     /**
      * Add event listener.
      *
+     * @api
      * @param string $eventName
      * @param Listener $listener
      */
@@ -47,10 +48,10 @@ class Emitter extends AbstractEventElement
                 }
             );
         }
-        
+
         $this->listeners->getItem($eventName)->addItem($listener->getUniqId(), $listener);
     }
-    
+
     /**
      * @param Listener $listener
      *
@@ -61,7 +62,7 @@ class Emitter extends AbstractEventElement
     {
         $this->listeners->getItem($listener->getEventName())->retain($listener);
     }
-    
+
     /**
      * Fire the event.
      *
@@ -73,20 +74,20 @@ class Emitter extends AbstractEventElement
     public function emit(string $eventName, &$data = null) : bool
     {
         $isPrevented = false;
-        
+
         if ($this->listeners->has($eventName)) {
             foreach ($this->listeners->getItem($eventName) as $listener) {
                 $isPrevented = $this->fire($listener, $data);
-                
+
                 if ($isPrevented) {
                     break;
                 }
             }
         }
-        
+
         return $isPrevented;
     }
-    
+
     /**
      * @param Listener $listener
      * @param $data
@@ -95,13 +96,15 @@ class Emitter extends AbstractEventElement
      */
     private function fire(Listener $listener, $data) : bool
     {
+        // @TODO: Rethink this place, protected-hack should to be removed
         $isPrevented = false;
-        
+
         $proxy = function () use ($listener, $data, &$isPrevented) {
+            /** @noinspection Annotator */
             $isPrevented = $listener->onEmit($data);
         };
         $proxy->call($listener);
-        
+
         return $isPrevented;
     }
 }
