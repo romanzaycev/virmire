@@ -1,4 +1,6 @@
-# Virmire
+# This repository is abandoned
+
+## Virmire
 
 [![Build Status](https://travis-ci.org/romanzaycev/virmire.svg?branch=dev)](https://travis-ci.org/romanzaycev/virmire)
 [![Code Climate](https://codeclimate.com/github/romanzaycev/virmire/badges/gpa.svg)](https://codeclimate.com/github/romanzaycev/virmire)
